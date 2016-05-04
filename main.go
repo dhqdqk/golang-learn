@@ -4,6 +4,21 @@ import "fmt"
 import "errors"
 import "reflect"
 
+
+// goto
+func mygoto() {
+	j := 0
+Here: //goto-tag
+	fmt.Println(j)
+	j++
+	if j > 5 {
+		goto Out
+	}
+	goto Here
+Out:
+	fmt.Println("out of goto")
+}
+
 func max(a, b int) int {
 	if a > b {
 		return a
@@ -101,19 +116,39 @@ func main() {
 	var s1 []int
 	fmt.Printf("sllice s1: %v\n", s1)
 
-	// map
+	// map[keyType]valueType
 	fmt.Println("******map******")
 	mdict := make(map[string]int)
 	mdict["one"] = 1
 	mdict["two"] = 2
 	mdict["three"] = 3
 	fmt.Println("mdict[`three`] is ", mdict["three"])
+	
+	// if-else
+	integer := 3
+	if integer == 3 {
+		fmt.Println("integer == 3\n")
+	} else if integer < 3 {
+		fmt.Println("integer is not equal to 3\n")
+	}
 
 	// for
 	fmt.Println("******for******")
 	for k, v := range mdict {
 		fmt.Printf("%v: %v\n", k, v)
 	}
+	
+	sum := 0
+	for i := 0; i < 10; i++ {
+		sum += i
+	}
+	fmt.Println("sum is equal to ", sum)
+
+	sum1 := 1
+	for sum1 < 500 {
+		sum1 += sum1
+	}
+	fmt.Println("now sum is equal to ", sum1)
 
 	// switch
 	fmt.Println("******switch******")
@@ -133,6 +168,9 @@ func main() {
 	default:
 		fmt.Println("default case")
 	}
+	
+	// goto
+	mygoto()
 
 	// func
 	fmt.Println("******func******")
