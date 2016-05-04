@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 import "errors"
+import "reflect"
 
 func max(a, b int) int {
 	if a > b {
@@ -14,6 +15,54 @@ func myarg(arg ...int) {
 	for _, n := range arg {
 		fmt.Printf("And the number is: %d\n", n)
 	}
+}
+
+const (
+	WHITE = iota
+	BLACK
+	BLUE
+	RED
+	YELLOW
+)
+
+type Color byte
+
+type Box struct {
+	width, height, depth float64
+	color                Color
+}
+
+type BoxList []Box // a list of boxes
+
+func (b Box) Volume() float64 {
+	return b.width * b.height * b.depth
+}
+
+func (b *Box) SetColor(c Color) {
+	b.color = c
+}
+
+func (bl BoxList) BiggestColor() Color {
+	v := 0.00
+	k := Color(WHITE)
+	for _, b := range bl {
+		if bv := b.Volume(); bv > v {
+			v = bv
+			k = b.color
+		}
+	}
+	return k
+}
+
+func (bl BoxList) PaintItBlack() {
+	for i, _ := range bl {
+		bl[i].SetColor(BLACK)
+	}
+}
+
+func (c Color) String() string {
+	strings := []string{"WHITE", "BLACK", "BLUE", "RED", "YELLOW"}
+	return strings[c]
 }
 
 func main() {
@@ -33,6 +82,12 @@ func main() {
 	if err != nil {
 		fmt.Print(err)
 	}
+
+	// iota
+	fmt.Println("*******iota******")
+
+	fmt.Printf("WHITE: %v\n", WHITE)
+	fmt.Printf("BLUE: %v\n", BLUE)
 
 	// array
 	fmt.Println("******array******")
@@ -101,4 +156,23 @@ func main() {
 		defer fmt.Printf("%d", i)
 	}
 
+	// struct
+	fmt.Println("*******struct*******")
+	boxes := BoxList{
+		Box{4, 4, 4, RED},
+		Box{10, 10, 1, YELLOW},
+		Box{1, 1, 20, BLACK},
+	}
+
+	fmt.Printf("We have %d boxes in our set\n", len(boxes))
+	fmt.Printf("The volume of the first one is : %v (%v, %v, %v)\n", boxes[0].Volume(), boxes[0].width, boxes[0].height, boxes[0].depth)
+	fmt.Println("The bigest one is", boxes.BiggestColor().String())
+	fmt.Println("The bigest one is :", boxes.BiggestColor())
+
+	// reflect
+	fmt.Println("********reflect*******")
+	var re float64 = 3.14
+	re_t := reflect.TypeOf(re)
+	re_v := reflect.ValueOf(re)
+	fmt.Println("the type of re is :", re_t, re_v)
 }
