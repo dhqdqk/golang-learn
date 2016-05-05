@@ -3,7 +3,7 @@ package main
 import "fmt"
 import "errors"
 import "reflect"
-
+import "runtime"
 
 // goto
 func mygoto() {
@@ -80,6 +80,31 @@ func (c Color) String() string {
 	return strings[c]
 }
 
+func say(s string) {
+	for i := 0; i < 5; i++ {
+		runtime.Gosched()
+		fmt.Println(s)
+	}
+}
+
+func gosum(a []int, c chan int) {
+	total := 0
+	for _, v := range a {
+		total += v
+		fmt.Println(v)
+	}
+	c <- total // send total to c
+}
+
+func fibonacci(n int, c chan int) {
+	x, y := 1, 1
+	for i := 0; i < n; i++ {
+		c <- x
+		x, y = y, x+y
+	}
+	close(c)
+}
+
 func main() {
 	//hello world
 	fmt.Printf("Hello, world;\n")
@@ -123,7 +148,7 @@ func main() {
 	mdict["two"] = 2
 	mdict["three"] = 3
 	fmt.Println("mdict[`three`] is ", mdict["three"])
-	
+
 	// if-else
 	integer := 3
 	if integer == 3 {
@@ -137,7 +162,7 @@ func main() {
 	for k, v := range mdict {
 		fmt.Printf("%v: %v\n", k, v)
 	}
-	
+
 	sum := 0
 	for i := 0; i < 10; i++ {
 		sum += i
@@ -152,8 +177,8 @@ func main() {
 
 	// switch
 	fmt.Println("******switch******")
-	integer := 6
-	switch integer {
+	integers := 6
+	switch integers {
 	case 4:
 		fmt.Println("The integer was <= 4")
 		fallthrough
@@ -168,7 +193,7 @@ func main() {
 	default:
 		fmt.Println("default case")
 	}
-	
+
 	// goto
 	mygoto()
 
@@ -213,4 +238,25 @@ func main() {
 	re_t := reflect.TypeOf(re)
 	re_v := reflect.ValueOf(re)
 	fmt.Println("the type of re is :", re_t, re_v)
+
+	// runtime-goroutine
+	fmt.Println("********runtime & goroutine********")
+	go say("world") // create a new goroutine
+	say("hello")    // current goroutine run at time
+	go_a := []int{7, 2, 8, -9, 4, 0}
+	go_c := make(chan int)
+	fmt.Println(go_a[:len(go_a)/2])
+	go gosum(go_a[:len(go_a)/2], go_c)
+	go gosum(go_a[len(go_a)/2:], go_c)
+	go_x, go_y := <-go_c, <-go_c // receive from c
+	fmt.Println(go_x, go_y, go_x+go_y)
+
+	// channel
+	ch_c := make(chan int, 10)
+	go fibonacci(10, ch_c)
+	for i := range ch_c {
+		fmt.Println(i)
+	}
+
+)
 }
