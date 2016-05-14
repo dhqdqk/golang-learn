@@ -257,6 +257,4 @@ func main() {
 	for i := range ch_c {
 		fmt.Println(i)
 	}
-
-)
 }
