@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 /*
+// get go-sqlite3
+go get github.com/mattn/go-sqlite3
 CREATE TABLE `userinfo` (
-    `uid` INT(10) NOT NULL AUTO_INCREMENT,
+    `uid` INT(10) NOT NULL AUTOINCREMENT,
     `username` VARCHAR(64) NULL DEFAULT NULL,
     `departname` VARCHAR(64) NULL DEFAULT NULL,
     `created` DATE NULL DEFAULT NULL,
@@ -31,14 +33,12 @@ func checkErr(err error) {
 	}
 }
 
-// 数据库test，用户表userinfo，关联用户信息表userdetail
 func main() {
-	// 连接数据库sql.Open("sqlDriveName", "username:password@[tcp([host]:80)]/dbname[?charset=utf8]")
-	db, err := sql.Open("mysql", "root:mysql@/test?charset=utf8")
+	db, err := sql.Open("sqlite3", "./test")
 	checkErr(err)
 
-	// 插入数据
-	stmt, err := db.Prepare("INSERT userinfo SET username=?,departname=?,created=?")
+	// insert data
+	stmt, err := db.Prepare("INSERT INTO userinfo(username, departname, created) values(?,?,?)")
 	checkErr(err)
 
 	res, err := stmt.Exec("golang", "mysql", "2016-05-15")
@@ -49,18 +49,19 @@ func main() {
 
 	fmt.Println(id)
 
-	// 更新数据
+	// update data
 	stmt, err = db.Prepare("update userinfo set username=? where uid=?")
 	checkErr(err)
 
-	res, err = stmt.Exec("golang", id)
+	res, err = stmt.Exec("golangupdate", id)
 	checkErr(err)
 
 	affect, err := res.RowsAffected()
 	checkErr(err)
+
 	fmt.Println(affect)
 
-	// 查询数据
+	// query data
 	rows, err := db.Query("SELECT * FROM userinfo")
 	checkErr(err)
 
@@ -68,7 +69,7 @@ func main() {
 		var uid int
 		var username string
 		var department string
-		var created string
+		var created time.Time
 		err = rows.Scan(&uid, &username, &department, &created)
 		checkErr(err)
 		fmt.Println(uid)
@@ -76,8 +77,6 @@ func main() {
 		fmt.Println(department)
 		fmt.Println(created)
 	}
-
-	// 删除数据
 	stmt, err = db.Prepare("delete from userinfo where uid=?")
 	checkErr(err)
 
