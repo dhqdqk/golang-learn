@@ -8,6 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+/*
 CREATE TABLE `userinfo` (
     `uid` INT(10) NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(64) NULL DEFAULT NULL,
@@ -22,6 +23,7 @@ CREATE TABLE `userdetail` (
     `profile` TEXT NULL,
     PRIMARY KEY (`uid`)
 )
+*/
 
 func main() {
 	pass
