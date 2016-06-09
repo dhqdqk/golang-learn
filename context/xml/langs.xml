@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<langs version="1">
+    <lang>
+        <langName>goalng</langName>
+        <langVersion>6.0</langVersion>
+    </lang>
+    <lang>
+        <langName>python</langName>
+        <langVersion>3.5</langVersion>
+    </lang>
+    <lang>
+        <langName>javascript</langName>
+        <langVersion>5.0</langVersion>
+    </lang>
+</langs>
